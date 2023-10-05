@@ -3,7 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
 const Menus = () => {
-    
+
     const links = ['products', 'about', 'contact', 'blog'];
     return (
         <>
@@ -16,13 +16,13 @@ const Menus = () => {
     )
 }
 const NavBar = () => {
-    const {user,logOut} = useAuth();
-    console.log("Navbar",user)
+    const { user, logOut, loading } = useAuth();
+    console.log("navbar",loading,user?.photoURL)
 
     const handleLogOut = () => {
         logOut()
-        .then(()=>toast.success('Successfully logged out'))
-        .catch((error)=>console.log(error.message))
+            .then(() => toast.success('Successfully logged out'))
+            .catch((error) => console.log(error.message))
     }
     return (
         <>
@@ -49,27 +49,29 @@ const NavBar = () => {
                 <div className="navbar-end">
 
                     {
-                        user?.email ? <div className="dropdown dropdown-end">
-                            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={user?.photoURL}/>
-                                </div>
-                            </label>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                                <li>
-                                    <button className="btn btn-sm  btn-ghost">{user?.displayName}</button>
-
-                                </li>
-                                <li>
-                                    <button onClick={handleLogOut} className="btn btn-sm  btn-ghost">Logout</button>
-
-                                </li>
-                            </ul>
-                        </div>
+                        loading ? <p>Loading......</p>
                             :
-                            <Link to='/login'>
-                                <button className="btn btn-sm  btn-ghost">Login</button>
-                            </Link>
+                            user?.email ? <div className="dropdown dropdown-end">
+                                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                                    <div className="w-10 rounded-full">
+                                        <img src={user?.photoURL} />
+                                    </div>
+                                </label>
+                                <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                                    <li>
+                                        <button className="btn btn-sm  btn-ghost">{user?.displayName}</button>
+
+                                    </li>
+                                    <li>
+                                        <button onClick={handleLogOut} className="btn btn-sm  btn-ghost">Logout</button>
+
+                                    </li>
+                                </ul>
+                            </div>
+                                :
+                                <Link to='/login'>
+                                    <button className="btn btn-sm  btn-ghost">Login</button>
+                                </Link>
                     }
                 </div>
             </div>

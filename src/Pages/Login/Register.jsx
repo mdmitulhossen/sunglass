@@ -4,13 +4,17 @@ import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import RegisterSpinner from '../../Components/Spinner/RegisterSpinner';
 import { useState } from 'react';
+import { set } from 'react-hook-form';
+import { getAuth } from 'firebase/auth';
+import auth from '../../config/firebase.config';
 
 const Register = () => {
     const navigate = useNavigate();
-    const { user,setUser, signUpWithEmailPassword, updateUserProfile } = useAuth();
+    const { user, signUpWithEmailPassword, updateUserProfile, loading } = useAuth();
+    // const auth = getAuth(app)
     const [registerSpinner, setRegisterSpinner] = useState(false)
 
-    const handleRegister = async(e) => {
+    const handleRegister = (e) => {
         setRegisterSpinner(true)
 
         e.preventDefault()
@@ -18,6 +22,10 @@ const Register = () => {
         const email = e.target.email.value;
         const imageUrl = e.target.imageUrl.value;
         const password = e.target.password.value;
+
+        const userInfo = {
+            name, email, imageUrl, password
+        }
 
         // Password Validation
         if (password.length < 6) {
@@ -31,30 +39,37 @@ const Register = () => {
         }
 
         //create user
-       await signUpWithEmailPassword(email, password)
+        signUpWithEmailPassword(email, password)
             .then(result => {
+                console.log("Hello Success")
                 updateUserProfile({ displayName: name, photoURL: imageUrl })
                     .then(() => {
-                        setRegisterSpinner(false)
-                        navigate('/')
-                        toast.success('User Create successful, please login')
+                        // auth.currentUser.reload()
+                        // navigate('/')
+                        console.log("you update profile")
+                        // toast.success('Registration successful')
                     })
-                    .catch(err => toast.error("user profile update error"))
+                    .catch(err => toast.error(err.message))
+            })
+            .catch(err => toast.error(err.message))
 
 
-            })
-            .catch(err => {
-                // Handle registration errors
-                if (err.code === 'auth/email-already-in-use') {
-                    toast.error('Email is already in use.');
-                } else {
-                    toast.error(err.message);
-                }
-            })
+        // update user profile
+        // if (user) {
+        //     updateUserProfile({ displayName: name, photoURL: imageUrl })
+        //         .then(() => {
+        //             // navigate('/')
+        //             console.log("you update profile")
+        //             // toast.success('Registration successful')
+        //         })
+        //         .catch(err => toast.error(err.message))
+        // }
 
     }
 
-    console.log(user)
+
+    // console.log("register jsx authStateChange",loading)
+    console.log("register jsx authStateChange", loading, user)
 
     return (
         <>
@@ -105,7 +120,7 @@ const Register = () => {
             </div>
 
             {
-                registerSpinner && <RegisterSpinner />
+                loading && <RegisterSpinner />
             }
         </>
     );
