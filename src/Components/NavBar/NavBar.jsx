@@ -17,7 +17,7 @@ const Menus = () => {
 }
 const NavBar = () => {
     const { user, logOut, loading } = useAuth();
-    console.log("navbar",loading,user?.photoURL)
+    console.log("navbar test profile update",loading,user?.photoURL)
 
     const handleLogOut = () => {
         logOut()

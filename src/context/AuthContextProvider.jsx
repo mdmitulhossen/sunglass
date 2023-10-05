@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import auth from "../config/firebase.config";
-import { set } from "react-hook-form";
 
 // create a context
 export const AuthContext = createContext(null);
@@ -37,22 +36,30 @@ const AuthContextProvider = ({ children }) => {
         return signOut(auth)
     }
 
-    // update profile
+    // update profile 1 way
 
+    // const updateUserProfile = (obj) => {
+    //     setLoading(true)
+    //     // return updateProfile(auth.currentUser, obj)
+    //     return new Promise((resolve, reject) => {
+    //         updateProfile(auth.currentUser, obj)
+    //             .then(() => {
+    //                 console.log("promise update profile 3")
+    //                 resolve("Profile updated successfully")
+    //                 setLoading(false)
+    //             })
+    //             .catch((error) => {
+    //                 reject(error)
+    //             })
+    //     })
+    // }
+
+     // update profile 2 way
     const updateUserProfile = (obj) => {
         setLoading(true)
         // return updateProfile(auth.currentUser, obj)
-        return new Promise((resolve, reject) => {
-            updateProfile(auth.currentUser, obj)
-                .then(() => {
+        return updateProfile(auth.currentUser, obj)
 
-                    resolve("Profile updated successfully")
-                    setLoading(false)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
     }
 
 
@@ -60,7 +67,7 @@ const AuthContextProvider = ({ children }) => {
     // use observer to check user state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            // console.log("Inner subscribe")
+            console.log("Inner subscribe 4")
             setLoading(false)
             setUser(currentUser);
         });
@@ -79,8 +86,8 @@ const AuthContextProvider = ({ children }) => {
         signInWithEmailPassword,
         logOut,
         updateUserProfile,
-        setUser,
         loading,
+        setLoading,
         user
     }
 

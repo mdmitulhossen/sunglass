@@ -10,7 +10,7 @@ import auth from '../../config/firebase.config';
 
 const Register = () => {
     const navigate = useNavigate();
-    const { user, signUpWithEmailPassword, updateUserProfile, loading } = useAuth();
+    const { user, signUpWithEmailPassword, updateUserProfile, loading ,setLoading} = useAuth();
     // const auth = getAuth(app)
     const [registerSpinner, setRegisterSpinner] = useState(false)
 
@@ -41,29 +41,25 @@ const Register = () => {
         //create user
         signUpWithEmailPassword(email, password)
             .then(result => {
-                console.log("Hello Success")
+                console.log("Hello Success 1")
                 updateUserProfile({ displayName: name, photoURL: imageUrl })
                     .then(() => {
                         // auth.currentUser.reload()
-                        // navigate('/')
-                        console.log("you update profile")
-                        // toast.success('Registration successful')
+                         // navigate('/')
+                        console.log("you update profile 2")
+                        setLoading(false)
+                        toast.success('Registration successful')
                     })
-                    .catch(err => toast.error(err.message))
+                    .catch(err => {
+                        setLoading(false)
+                        toast.error(err.message)
+                    })
             })
-            .catch(err => toast.error(err.message))
+            .catch(err =>{ 
+                toast.error(err.message)
+                setLoading(false)
+            })
 
-
-        // update user profile
-        // if (user) {
-        //     updateUserProfile({ displayName: name, photoURL: imageUrl })
-        //         .then(() => {
-        //             // navigate('/')
-        //             console.log("you update profile")
-        //             // toast.success('Registration successful')
-        //         })
-        //         .catch(err => toast.error(err.message))
-        // }
 
     }
 
